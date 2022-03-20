@@ -46,6 +46,7 @@ class Node():
         self.f = g + h
 
 def distance_between(cell_a, cell_b):
+
     size = 1 / math.sqrt(3)
     width = math.sqrt(3) * size
     height = 2 *  size
@@ -79,8 +80,7 @@ def get_adj_cells(cell, board, n):
                 continue
             # occupied cell case
             if (r, q) in board:
-                if board[(r, q)] != "G":
-                    continue
+                continue
             # append cell coordinates to list
             adjacent_cells.append((r, q))
     return adjacent_cells
@@ -92,7 +92,7 @@ def get_cleared_board(n):
             board[(r, q)] = ""
     return board
 
-def populate_board(board, pq, n):
+def update_board(board, pq, n):
     npq = deepcopy(pq)
     this_node = npq.deq()
     while(this_node):
@@ -100,11 +100,13 @@ def populate_board(board, pq, n):
         this_node = npq.deq()
     return board
 
-def search(pq, goal_cell, board, n, previous, found):
+def search(pq, goal_cell, board, n, previous):
     current_node = pq.deq()
+    # no nodes in priority queue and not found - no path exists
+    if not current_node:
+        return None
     if current_node.cell == goal_cell:
         found = True
-    if not current_node or found:
         return previous
     board[current_node.cell] = 'e'
     adj_cells = get_adj_cells(current_node.cell, board, n)
@@ -114,10 +116,9 @@ def search(pq, goal_cell, board, n, previous, found):
         h = distance_between(cell, goal_cell)
         child_node = Node(cell, g, h)
         pq.enq(child_node, child_node.f)
-    # print_board(n, populate_board(board, pq, n))
-    populate_board(board, pq, n)
+    board = update_board(board, pq, n)
     # sleep(0.8)
-    return search(pq, goal_cell, board, n, previous, False)
+    return search(pq, goal_cell, board, n, previous)
 
 def main():
     try:
@@ -130,13 +131,12 @@ def main():
     board = board_to_dict(data['board'])
     start_cell = tuple(data["start"])
     goal_cell = tuple(data["goal"])
-    board[goal_cell] = "G"
     n = data['n']
     pq = PriorityQueue()
     start_node = Node(start_cell, 0, distance_between(start_cell, goal_cell))
     pq.enq(start_node, start_node.f)
-    previous = search(pq, goal_cell, board, n, {}, False)
-    if goal_cell not in previous:
+    previous = search(pq, goal_cell, board, n, {})
+    if not previous:
         print("Goal cell unreachable")
         return
     route = []
