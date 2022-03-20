@@ -1,0 +1,1 @@
+try removing board parameter from input to recursive function as it seems it's global
