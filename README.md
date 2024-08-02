@@ -16,4 +16,4 @@ We used the Minimax algorithm optimised with:
 
 ### Evaluation Function
 The evaluation function is largely based on the paper [The Game of Hex: An Automatic Theorem Proving Approach to Game](https://aaai.org/papers/00189-AAAI00-029-the-game-of-hex-an-automatic-theorem-proving-approach-to-game-programming/) which provides an evaluation score as if each piece emitted an electrical resistance and the goal was to minimise the total resistance over the board.
-The second idea implemented was that of trying to promote long strings of connected pieces. For this, graph theory was used to identify connected groups and reward those positions with fewer connected groups.
+The second idea implemented aimed to promote long strings of connected pieces. For this, graph theory was used to identify connected groups and reward those positions with fewer connected groups.
